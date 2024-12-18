@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="shopping-cart">
+    <h1>My Shopping Cart</h1>
+
+    <div class="cart-item" data-price="20">
+      <p class="item-name">Item 1</p>
+      <div class="quantity">
+        <button class="btn-decrement">-</button>
+        <input type="number" class="quantity-input" value="1" min="1">
+        <button class="btn-increment">+</button>
+      </div>
+      <p class="item-price">$20</p>
+      <button class="btn-like">❤</button>
+      <button class="btn-delete">Delete</button>
+    </div>
+
+    <div class="cart-item" data-price="15">
+      <p class="item-name">Item 2</p>
+      <div class="quantity">
+        <button class="btn-decrement">-</button>
+        <input type="number" class="quantity-input" value="1" min="1">
+        <button class="btn-increment">+</button>
+      </div>
+      <p class="item-price">$15</p>
+      <button class="btn-like">❤</button>
+      <button class="btn-delete">Delete</button>
+    </div>
+
+    <div class="total">
+      <p>Total: $<span id="total-price">35</span></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cartItems = document.querySelectorAll('.cart-item');
+      const totalPriceElem = document.getElementById('total-price');
+
+      // Function to update total price
+      const updateTotalPrice = () => {
+        let total = 0;
+        cartItems.forEach(item => {
+          const price = parseFloat(item.dataset.price);
+          const quantity = item.querySelector('.quantity-input').value;
+          total += price * quantity;
+        });
+        totalPriceElem.textContent = total.toFixed(2);
+      };
+
+      // Event listener for increment buttons
+      cartItems.forEach(item => {
+        const incrementBtn = item.querySelector('.btn-increment');
+        const decrementBtn = item.querySelector('.btn-decrement');
+        const quantityInput = item.querySelector('.quantity-input');
+
+        incrementBtn.addEventListener('click', () => {
+          quantityInput.value = parseInt(quantityInput.value) + 1;
+          updateTotalPrice();
+        });
+
+        decrementBtn.addEventListener('click', () => {
+          if (quantityInput.value > 1) {
+            quantityInput.value = parseInt(quantityInput.value) - 1;
+            updateTotalPrice();
+          }
+        });
+
+        // Event listener for quantity input change
+        quantityInput.addEventListener('input', updateTotalPrice);
+      });
+
+      // Event listener for like buttons
+      cartItems.forEach(item => {
+        const likeBtn = item.querySelector('.btn-like');
+        likeBtn.addEventListener('click', () => {
+          likeBtn.classList.toggle('liked');
+        });
+      });
+
+      // Event listener for delete buttons
+      cartItems.forEach(item => {
+        const deleteBtn = item.querySelector('.btn-delete');
+        deleteBtn.addEventListener('click', () => {
+          item.remove();
+          updateTotalPrice(); // Recalculate the total after removal
+        });
+      });
+    });
+  </script>
+</body>
+</html>
